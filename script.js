@@ -1,11 +1,13 @@
 // Student Task Manager
-// Handles adding, showing, completing and deleting tasks.
+// Handles adding, showing, completing, deleting and searching tasks.
 
 const taskForm = document.getElementById("task-form");
 const titleInput = document.getElementById("task-title");
 const descInput = document.getElementById("task-desc");
 const taskList = document.getElementById("task-list");
 const emptyMessage = document.getElementById("empty-message");
+const searchInput = document.getElementById("task-search");
+const taskCount = document.getElementById("task-count");
 
 const STORAGE_KEY = "studentTasks";
 
@@ -62,11 +64,26 @@ function deleteTask(id) {
   renderTasks();
 }
 
-// Show all tasks on the page
+// Return only the tasks that match the search text
+function getVisibleTasks() {
+  const query = searchInput.value.trim().toLowerCase();
+  if (query === "") {
+    return tasks;
+  }
+  return tasks.filter(function (task) {
+    return (
+      task.title.toLowerCase().includes(query) ||
+      task.description.toLowerCase().includes(query)
+    );
+  });
+}
+
+// Show the tasks on the page
 function renderTasks() {
   taskList.innerHTML = "";
+  const visibleTasks = getVisibleTasks();
 
-  tasks.forEach(function (task) {
+  visibleTasks.forEach(function (task) {
     const item = document.createElement("li");
     item.className = "task-item" + (task.completed ? " completed" : "");
 
@@ -102,8 +119,22 @@ function renderTasks() {
     taskList.appendChild(item);
   });
 
-  emptyMessage.style.display = tasks.length === 0 ? "block" : "none";
+  const doneCount = tasks.filter(function (task) {
+    return task.completed;
+  }).length;
+  taskCount.textContent =
+    "Showing " + visibleTasks.length + " of " + tasks.length +
+    " tasks (" + doneCount + " completed)";
+
+  if (tasks.length === 0) {
+    emptyMessage.textContent = "No tasks yet. Add your first task above.";
+  } else {
+    emptyMessage.textContent = "No tasks match your search.";
+  }
+  emptyMessage.style.display = visibleTasks.length === 0 ? "block" : "none";
 }
+
+searchInput.addEventListener("input", renderTasks);
 
 taskForm.addEventListener("submit", function (event) {
   event.preventDefault();
