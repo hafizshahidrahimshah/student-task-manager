@@ -14,6 +14,19 @@
 
   <main class="container">
     <section class="card">
+      <h2>Add a New Task</h2>
+      <form id="task-form" class="task-form">
+        <label for="task-title">Task Title</label>
+        <input type="text" id="task-title" placeholder="e.g. Finish Computer Vision lab report" maxlength="80" required>
+
+        <label for="task-desc">Description</label>
+        <textarea id="task-desc" rows="3" placeholder="Short details about the task"></textarea>
+
+        <button type="submit" class="btn btn-primary">Add Task</button>
+      </form>
+    </section>
+
+    <section class="card">
       <h2>My Tasks</h2>
       <ul id="task-list" class="task-list"></ul>
       <p id="empty-message" class="empty">No tasks yet.</p>
